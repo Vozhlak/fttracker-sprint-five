@@ -27,7 +27,7 @@ type Training struct {
 // Формула расчета:
 // количество_повторов * длина_шага / м_в_км
 func (t Training) distance() float64 {
-	return float64(t.Action) * LenStep / MInKm
+	return float64(t.Action) * t.LenStep / MInKm
 }
 
 // meanSpeed возвращает среднюю скорость бега или ходьбы.
@@ -100,7 +100,7 @@ type Running struct {
 // Это переопределенный метод Calories() из Training.
 func (r Running) Calories() float64 {
 	speed := r.meanSpeed()
-	return (CaloriesMeanSpeedMultiplier * speed * CaloriesMeanSpeedShift) * r.Weight / MInKm * r.Duration.Hours() * MinInHours
+	return (CaloriesMeanSpeedMultiplier*speed + CaloriesMeanSpeedShift) * r.Weight / MInKm * r.Duration.Hours() * MinInHours
 }
 
 // TrainingInfo возвращает структуру InfoMessage с информацией о проведенной тренировке.
@@ -137,8 +137,7 @@ func (w Walking) Calories() float64 {
 	speed := w.meanSpeed()                   // Средняя скорость (м/с)
 	speedInS := math.Pow(speed*KmHInMsec, 2) // Средняя скорость в м/с возведенная в квадрат
 	heightInM := w.Height / CmInM            // Перевод роста в метры
-	weight := w.Weight                       //вес_спортсмена_в_кг
-	return (CaloriesWeightMultiplier*weight + (speedInS/heightInM)*CaloriesSpeedHeightMultiplier*weight) * w.Duration.Hours() * MinInHours
+	return (CaloriesWeightMultiplier*w.Weight + (speedInS/heightInM)*CaloriesSpeedHeightMultiplier*w.Weight) * w.Duration.Hours() * MinInHours
 }
 
 // TrainingInfo возвращает структуру InfoMessage с информацией о проведенной тренировке.
